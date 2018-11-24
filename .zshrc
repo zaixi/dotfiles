@@ -1,617 +1,291 @@
-setopt long_list_jobs       # list jobs in the long format by default
-setopt auto_resume          # Attempt to resume existing job before creating a new process.
-setopt notify               # Report status of background jobs immediately.
-unsetopt bg_nice            # Don't run all background jobs at a lower priority.
-unsetopt hup                # Don't kill jobs on shell exit.
-setopt nolistbeep           # don't beep on ambiguous completion \o/
-setopt no_beep              # don't beep on error
-setopt interactive_comments # Allow comments even in interactive shells
-setopt multios              # Perform implicit tees or cats when multiple redirections are attempted, see http://zsh.sourceforge.net/Doc/Release/Options.html#index-MULTIOS
-setopt extended_glob        # Treat the ‘#’, ‘~’ and ‘^’ characters as part of patterns for filename generation, etc. (An initial unquoted ‘~’ always produces named directory expansion.)
+##!/bin/zsh -f
+#zmodload zsh/zprof
 
-# Replace '?', '=' and '&' with \?, \=, \& when typing/pasting urls
-autoload -Uz url-quote-magic
-zle -N self-insert url-quote-magic
-
-# add bin in path
-export PATH=~/bin:$PATH
-
-# Default editor
-export VISUAL='vim'
-export EDITOR='vim'
-
-ZSH_COMPDUMP="$HOME/.cache/zsh-completion-dump"
-
-# Load and run compinit (autocompletion)
-autoload -U compinit
-compinit -i -d "${ZSH_COMPDUMP}"
-
-unsetopt flowcontrol     # output flow control via start/stop characters (usually assigned to ^S/^Q) is disabled in the shell’s editor
-setopt menu_complete     # autoselect the first completion entry
-setopt auto_menu         # show completion menu on succesive tab press
-setopt complete_in_word  # allow completion in word
-setopt always_to_end     # if a completion is performed with the cursor within a word, and a full completion is inserted, the cursor is moved to the end of the word
-
-WORDCHARS='*?_[]~=&;!#$%^(){}<>'
-
-zmodload -i zsh/complist
-
-# Use caching to make completion for commands such as dpkg and apt usable.
-zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "$HOME/.cache/zsh-completion-cache"
-
-# Case-sensitive (all), partial-word, and then substring completion.
-# zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-# setopt CASE_GLOB
-
-# Case-insensitive (all), partial-word, and then substring completion.
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-unsetopt CASE_GLOB
-
-# Group matches and describe.
-zstyle ':completion:*:*:*:*:*' menu select
-zstyle ':completion:*:matches' group 'yes'
-zstyle ':completion:*:options' description 'yes'
-zstyle ':completion:*:options' auto-description '%d'
-zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
-zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
-zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
-zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
-zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' verbose yes
-
-# Fuzzy match mistyped completions.
-zstyle ':completion:*' completer _complete _match _approximate
-zstyle ':completion:*:match:*' original only
-zstyle ':completion:*:approximate:*' max-errors 1 numeric
-
-# Increase the number of errors based on the length of the typed word.
-zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
-
-# Don't complete unavailable commands.
-zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
-
-# Array completion element sorting.
-zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
-
-# Directories
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
-zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
-zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
-zstyle ':completion:*' squeeze-slashes true
-
-# History
-zstyle ':completion:*:history-words' stop yes
-zstyle ':completion:*:history-words' remove-all-dups yes
-zstyle ':completion:*:history-words' list false
-zstyle ':completion:*:history-words' menu yes
-
-# Environmental Variables
-zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
-
-# Populate hostname completion.
-zstyle -e ':completion:*:hosts' hosts 'reply=(
-  ${=${=${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) 2>/dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
-  ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*}
-  ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2>/dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
-)'
-
-# Don't complete uninteresting users...
-zstyle ':completion:*:*:*:users' ignored-patterns \
-adm amanda apache avahi beaglidx bin cacti canna clamav daemon \
-dbus distcache dovecot fax ftp games gdm gkrellmd gopher \
-hacluster haldaemon halt hsqldb ident junkbust ldap lp mail \
-mailman mailnull mldonkey mysql nagios \
-named netdump news nfsnobody nobody nscd ntp nut nx openvpn \
-operator pcap postfix postgres privoxy pulse pvm quagga radvd \
-rpc rpcuser rpm shutdown squid sshd sync uucp vcsa xfs '_*'
-
-# ... unless we really want to.
-zstyle '*' single-ignored show
-
-# Ignore multiple entries.
-zstyle ':completion:*:(rm|kill|diff):*' ignore-line other
-zstyle ':completion:*:rm:*' file-patterns '*:all-files'
-
-# Kill
-zstyle ':completion:*:*:*:*:processes' command 'ps -u $LOGNAME -o pid,user,command -w'
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;36=0=01'
-zstyle ':completion:*:*:kill:*' menu yes select
-zstyle ':completion:*:*:kill:*' force-list always
-zstyle ':completion:*:*:kill:*' insert-ids single
-
-# Man
-zstyle ':completion:*:manuals' separate-sections true
-zstyle ':completion:*:manuals.(^1*)' insert-sections true
-
-# Fix autocorrections
-if [[ "$ENABLE_CORRECTION" == "true" ]]; then
-    alias ebuild='nocorrect ebuild'
-    alias gist='nocorrect gist'
-    alias gcc='nocorrect gcc'
-    alias heroku='nocorrect heroku'
-    alias hpodder='nocorrect hpodder'
-    alias man='nocorrect man'
-    alias mkdir='nocorrect mkdir'
-    alias mv='nocorrect mv'
-    alias rm='nocorrect rm'
-    alias ln='nocorrect ln'
-    alias cp='nocorrect cp'
-    alias mysql='nocorrect mysql'
-    alias sudo='nocorrect sudo'
-    
-    setopt correct_all # try to correct the spelling of all arguments in a line.
+# 安装和更新 {{{
+# Install Plugin manager if not exist
+if [ ! -x "$(which antibody)" ]; then
+    echo "Installing antibody..."
+    URL="git.io/antibody"
+    if [ -x "$(which curl)" ]; then
+		curl -sL "$URL" | sudo sh -s
+    else
+        echo "ERROR: please install curl before installation !!"
+        exit
+    fi
+    if [ ! $? -eq 0 ]; then
+        echo ""
+        echo "ERROR: downloading antibody ($URL) failed !!"
+        exit
+	fi
 fi
 
-# Global directories aliases
-alias -g ..='..'
-alias -g ...='../..'
-alias -g ....='../../..'
-alias -g .....='../../../..'
-alias -g ......='../../../../..'
-alias -g .......='../../../../../..'
+function _upgrade_plugin() {
+  antibody update
+  cd "$HOME/.fzf" && git pull && ./install --bin
+  pip3 install thefuck --upgrade
+  sudo pip3 install thefuck --upgrade
+}
 
-# Global commands aliases
-alias -g G='| grep'
-alias -g N='| grep -v'
-alias -g E='| grep-passthru'
-alias -g HR='| highlight red'
-alias -g HG='| highlight green'
-alias -g HB='| highlight blue'
-alias -g HM='| highlight magenta'
-alias -g HC='| highlight cyan'
-alias -g HY='| highlight yellow'
-alias -g C='| wc -l'
-alias -g S='| sort'
-alias -g H='| head'
-alias -g L="| less"
-alias -g T='| tail'
+function check_for_upgrade() {
+	Plugin_Cache_Dir="$HOME/.cache/zsh_plugin_update"
+	if mkdir -p "$Plugin_Cache_Dir/update.lock" 2>/dev/null; then
+		. ${Plugin_Cache_Dir}/.zsh-update 2>/dev/null
+		zmodload zsh/datetime
+		NOW_TIME=$(( $EPOCHSECONDS / 60 / 60 / 24 ))
+		if [[ -z "$LAST_TIME" ]]; then
+			echo "LAST_TIME=$NOW_TIME" >! ${Plugin_Cache_Dir}/.zsh-update
+		else
+			epoch_target=15
+			epoch_diff=$(($NOW_TIME - $LAST_TIME))
+			if [ $epoch_diff -gt $epoch_target ]; then
+				echo "Plugin starts to install or upgrade...\n"
+				_upgrade_plugin
+				echo "LAST_TIME=$NOW_TIME" >! ${Plugin_Cache_Dir}/.zsh-update
+			fi
+		fi
+	  rmdir $Plugin_Cache_Dir/update.lock
+	fi
+}
+check_for_upgrade
 
-alias halt='shutdown -h now'
-alias reboot='shutdown -r now'
-alias apt='apt-get'
-alias agi='apt-get install'
-alias agr='apt-get remove'
-alias agu='apt-get update'
-alias agg='apt-get upgrade'
-alias ags='apt-cache search'
-alias agall='apt-get update && apt-get -y upgrade && apt-get -y autoremove'
+#}}}
 
-# Directories working
-alias pwd=' pwd'
-alias cd=' cd'
-alias cdg=' cd "$(git rev-parse --show-toplevel)"' ## git root
-alias -- -=' cd -'
-alias 1=' cd -'
-alias 2=' cd -2'
-alias 3=' cd -3'
-alias 4=' cd -4'
-alias 5=' cd -5'
-alias 6=' cd -6'
-alias 7=' cd -7'
-alias 8=' cd -8'
-alias 9=' cd -9'
-alias ls='ls --color=auto'
-alias l='ls -lh --group-directories-first'
-alias ll='ls -lhA --group-directories-first'
-alias llm='ls -lhAt --group-directories-first' ## "m" for sort by last modified date
-alias llc='ls -lhAU --group-directories-first' ## "c" for sort by creation date
-alias lls='ls -lhAS --group-directories-first' ## "s" for sort by size
-alias k='k -h'
-alias kl='k -h --no-vcs'
-alias kk='k -Ah'
-alias kkl='k -Ah --no-vcs'
+# 个人设置加载 {{{
+# Load local bash/zsh compatible settings
+_INIT_SH_NOFUN=1
+[ -f "$HOME/.local/etc/init.sh" ] && source "$HOME/.local/etc/init.sh"
 
-# 1 letter commands shortcuts
-alias c=" clear && printf '\033[3J'"
-alias p=' dirs -v | head -10' ## most used dirs for current session
-alias x=' exit'
-alias d='desk'
-alias h='history'
-alias j='jobs'
-alias v='open-with-vim'
-alias e='open-with-vim'
-alias s='open-with-sublime-text'
-alias a='open-with-atom'
-alias n='nano'
-alias o='xdg-open'
-alias g='git'
-alias m='mutt'
+# exit for non-interactive shell
+#[[ $- != *i* ]] && return
 
-# Others commands shortcuts
-alias dg='desk go'
-alias co='pygmentize -O style=monokai -f console256 -g'
-alias zd='z --del'
-alias mf='mutt -F'
-alias k9='kill -9'
-alias rd='rmdir'
-alias md='mkdir -p'
-alias mcd='mkdir-cd'
-alias mkcd='mkdir-cd'
-alias tr='trash-put'
-alias rmf="rm -rf"
-alias rmrf="rm -rf"
-alias cpr="cp -r"
-alias bak='backup-file'
-alias tailf='tail -f'
-alias less='less -r'
-alias whence='type -a'
-alias whereis='whereis'
-alias grep='grep --color=auto'
-alias vgrep='grep -v --color=auto'
-alias egrep='egrep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias zshrc='source ~/.zshrc' ## Reload config
-alias dotfiles='(cd ~/dotfiles/public && git pull) ; (cd ~/dotfiles/private && git pull) ; source ~/.zshrc' ## Pull dotfiles from repositories and reload config
+# WSL (aka Bash for Windows) doesn't work well with BG_NICE
+[ -d "/mnt/c" ] && [[ "$(uname -a)" == *Microsoft* ]] && unsetopt BG_NICE
 
-# System stats
-alias free='free -h'
-alias ps='ps auxf'
-alias df='df -h'
-alias du='du -h'
-alias du0='du --max-depth=0'
-alias du1='du --max-depth=1 | sort -k2' ## sort by name
-alias du1s='du --max-depth=1 | sort -h' ## sort by size
-alias iotop='iotop -Poa' ## iotop with only processes using i/o + accumulated i/o
-alias dmesg="dmesg -T|sed -e 's|\(^.*'`date +%Y`']\)\(.*\)|\x1b[0;34m\1\x1b[0m - \2|g'" ## dmesg with colored human-readable dates
+#}}}
+#export TERM=xterm-256color
+# 插件 {{{
+source <(antibody init)
+ZSH="$(antibody home)/https-COLON--SLASH--SLASH-github.com-SLASH-robbyrussell-SLASH-oh-my-zsh"
+antibody bundle robbyrussell/oh-my-zsh
+antibody bundle "
+robbyrussell/oh-my-zsh path:plugins/common-aliases
+robbyrussell/oh-my-zsh path:plugins/colorize
+robbyrussell/oh-my-zsh path:plugins/autojump
+robbyrussell/oh-my-zsh path:plugins/fzf
+robbyrussell/oh-my-zsh path:plugins/colored-man-pages
+robbyrussell/oh-my-zsh path:plugins/last-working-dir
+robbyrussell/oh-my-zsh path:plugins/extract
+robbyrussell/oh-my-zsh path:plugins/repo
+robbyrussell/oh-my-zsh path:plugins/cp
+#robbyrussell/oh-my-zsh path:plugins/thefuck
+"
 
-# Local rsync
-alias rsync-copy="rsync -av --progress -h"
-alias rsync-move="rsync -av --progress -h --remove-source-files"
-alias rsync-update="rsync -avu --progress -h"
-alias rsync-synchronize="rsync -avu --delete --progress -h"
+antibody bundle zsh-users/zsh-history-substring-search
+antibody bundle zsh-users/zsh-autosuggestions
+antibody bundle zsh-users/zsh-completions
+antibody bundle unixorn/autoupdate-antigen.zshplugin
+antibody bundle zsh-users/zsh-syntax-highlighting
+antibody bundle mafredri/zsh-async
 
-# Files rights
-alias 600='chmod 600 -R'
-alias 640='chmod 640 -R'
-alias 644='chmod 644 -R'
-alias 755='chmod 755 -R'
-alias 775='chmod 775 -R'
-alias 777='chmod 777 -R'
-alias www="chown www-data:www-data * .* -R"
-alias mx='chmod u+x'
+# 主题
+#
+# powerline
+#
+#POWERLEVEL9K_VCS_GIT_HOOKS=()
+#POWERLEVEL9K_MODE=flat
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
+#POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator)
+POWERLEVEL9K_STATUS_OK=false
+#antibody bundle "bhilburn/powerlevel9k"
+#antibody bundle "robobenklein/p10k"
 
-# List content of archive but don't extract
-function ll-archive() {
-    if [ -f "$1" ]; then
-        case "$1" in
-            *.tar.bz2|*.tbz2|*.tbz)  tar -jtf "$1"     ;;
-            *.tar.gz)                tar -ztf "$1"     ;;
-            *.tar|*.tgz|*.tar.xz)    tar -tf  "$1"     ;;
-            *.gz)                    gzip -l  "$1"     ;;
-            *.rar)                   rar vb   "$1"     ;;
-            *.zip)                   unzip -l "$1"     ;;
-            *.7z)                    7z l     "$1"     ;;
-            *.lzo)                   lzop -l  "$1"     ;;
-            *.xz|*.txz|*.lzma|*.tlz) xz -l    "$1"     ;;
-        esac
-    else
-        echo "Sorry, '$1' is not a valid archive."
-        echo "Valid archive types are:"
-        echo "tar.bz2, tar.gz, tar.xz, tar, gz,"
-        echo "tbz2, tbz, tgz, lzo, rar"
-        echo "zip, 7z, xz and lzma"
+#
+# normal
+#
+antibody bundle zaixi/pure
+##antibody bundle sindresorhus/pure
+
+#}}}
+
+# thefuck {{{
+if [[ -z $commands[thefuck] ]]; then
+    echo 'thefuck is not installed, you should "pip install thefuck" or "brew install thefuck" first.'
+    echo 'See https://github.com/nvbn/thefuck#installation'
+    return 1
+fi
+
+fuck-command-line() {
+    local FUCK="$(THEFUCK_REQUIRE_CONFIRMATION=0 thefuck $(fc -ln -1 | tail -n 1) 2> /dev/null)"
+    [[ -z $FUCK ]] && echo -n -e "\a" && return
+    BUFFER=$FUCK
+    zle end-of-line
+}
+zle -N fuck-command-line
+# Defined shortcut keys: [Esc] [Esc]
+bindkey "\e\e" fuck-command-line
+
+# }}}
+
+# fzf {{{
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+export FZF_DEFAULT_OPTS="
+--color fg:-1,bg:-1,hl:33,fg+:254,bg+:235,hl+:33
+--color info:136,prompt:136,pointer:230,marker:230,spinner:136
+"
+export FZF_COMPLETION_TRIGGER=''
+bindkey '^T' fzf-completion
+bindkey '^I' $fzf_default_completion
+
+# fuzzy grep open via ag with line number
+vg() {
+  local file
+  local line
+
+  #read -r file line <<<"$(ag --nobreak --noheading $@ | fzf -0 -1 | awk -F: '{print $1, $2}')"
+  read -r file line <<<"$(ag --nobreak --noheading --color $@ | fzf -0 -1 --ansi | awk -F: '{print $1, $2}')"
+
+  if [[ -n $file ]]
+  then
+     vim $file +$line
+  fi
+}
+
+j() {
+    if [[ "$#" -ne 0 ]]; then
+        cd $(autojump $@)
+        return
     fi
+    cd "$(autojump -s | sed '/_____/Q; s/^[0-9,.:]*\s*//' |  fzf --height 40% --reverse --inline-info)"
 }
 
-# Extract an archive
-function extract() {
-    if [ -z "$2" ]; then 2="."; fi
-    if [ -f "$1" ] ; then
-        case "$1" in
-            *.tar.bz2|*.tgz|*.tbz2|*.tbz) mkdir -v "$2" 2>/dev/null ; tar xvjf "$1" -C "$2"  ;;
-            *.tar.gz)                     mkdir -v "$2" 2>/dev/null ; tar xvzf "$1" -C "$2"  ;;
-            *.tar.xz)                     mkdir -v "$2" 2>/dev/null ; tar xvJf "$1"          ;;
-            *.tar)                        mkdir -v "$2" 2>/dev/null ; tar xvf  "$1" -C "$2"  ;;
-            *.rar)                        mkdir -v "$2" 2>/dev/null ; 7z x     "$1" -o"$2"   ;;
-            *.zip)                        mkdir -v "$2" 2>/dev/null ; unzip    "$1" -d "$2"  ;;
-            *.7z)                         mkdir -v "$2" 2>/dev/null ; 7z x     "$1" -o"$2"   ;;
-            *.lzo)                        mkdir -v "$2" 2>/dev/null ; lzop -d  "$1" -p "$2"  ;;
-            *.gz)                         gunzip "$1"                                        ;;
-            *.bz2)                        bunzip2 "$1"                                       ;;
-            *.Z)                          uncompress "$1"                                    ;;
-            *.xz|*.txz|*.lzma|*.tlz)      xz -d "$1"                                         ;;
-            *)
-        esac
-    else
-        echo "Sorry, '$1' could not be decompressed."
-        echo "Usage: extract <archive> <destination>"
-        echo "Example: extract PKGBUILD.tar.bz2 ."
-        echo "Valid archive types are:"
-        echo "tar.bz2, tar.gz, tar.xz, tar, bz2,"
-        echo "gz, tbz2, tbz, tgz, lzo,"
-        echo "rar, zip, 7z, xz and lzma"
-    fi
+# fe [FUZZY PATTERN] - Open the selected file with the default editor
+#   - Bypass fuzzy finder if there's only one match (--select-1)
+#   - Exit if there's no match (--exit-0)
+fe() {
+  local files
+  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
 
-# Find all git repositories in a path and run git pull
-function git-repositories-pull() {
-    if [ $# -eq 0 ]; then
-        find . -name "*.git" -print0 | xargs -0 -n1 dirname | xargs -I repodir sh -c 'cd repodir ; printf "repodir ... " ; git pull'
-    else
-        find "$@" -name "*.git" -print0 | xargs -0 -n1 dirname | xargs -I repodir sh -c 'cd repodir ; printf "repodir ... " ; git pull'
-    fi;
+# fda - including hidden directories
+fda() {
+  local dir
+  dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir"
 }
+#}}}
 
-# compress a file or folder
-function compress() {
-        case "$1" in
-        tar.bz2|.tar.bz2) tar cvjf "${2%%/}.tar.bz2" "${2%%/}/" ;;
-        tbz2|.tbz2)       tar cvjf "${2%%/}.tbz2" "${2%%/}/"    ;;
-        tbz|.tbz)         tar cvjf "${2%%/}.tbz" "${2%%/}/"     ;;
-        tar.xz)           tar cvJf "${2%%/}.tar.xz" "${2%%/}/"  ;;
-        tar.gz|.tar.gz)   tar cvzf "${2%%/}.tar.gz" "${2%%/}/"  ;;
-        tgz|.tgz)         tar cvjf "${2%%/}.tgz" "${2%%/}/"     ;;
-        tar|.tar)         tar cvf  "${2%%/}.tar" "${2%%/}/"     ;;
-        rar|.rar)         rar a "${2}.rar" "$2"                 ;;
-        zip|.zip)         zip -r -9 "${2}.zip" "$2"             ;;
-        7z|.7z)           7z a "${2}.7z" "$2"                   ;;
-        lzo|.lzo)         lzop -v "$2"                          ;;
-        gz|.gz)           gzip -r -v "$2"                       ;;
-        bz2|.bz2)         bzip2 -v "$2"                         ;;
-        xz|.xz)           xz -v "$2"                            ;;
-        lzma|.lzma)       lzma -v "$2"                          ;;
-        *)                echo "Compress a file or directory."
-        echo "Usage:   compress <archive type> <filename>"
-        echo "Example: ac tar.bz2 PKGBUILD"
-        echo "Please specify archive type and source."
-        echo "Valid archive types are:"
-        echo "tar.bz2, tar.gz, tar.gz, tar, bz2, gz, tbz2, tbz,"
-        echo "tgz, lzo, rar, zip, 7z, xz and lzma." ;;
-    esac
-}
+# 自动补全 {{{
 
-# Show aliases and functions cheat-sheet
-function cheat-sheet() {
-    cat ~/dotfiles/public/zsh/aliases.zsh |
-        perl -p0e 's/\nelse\n.*?\nfi\n/\n/sg' |
-        perl -p0e 's/\nfor .*?done\n//sg' |
-        grep -v "^if " |
-        sed -r 's/^[[:space:]]+(.*)/\1/g' |
-        sed -r 's/^# (.*)/\x1b[32m\x1b[1m\n# \1\x1b[0m/' |
-        sed -r 's/## (.*)/\x1b[33m## \1\x1b[0m/' |
-        sed -r 's/-- -/-/' |
-        sed -r 's/alias -g/alias/' |
-        sed -r 's/^alias (-g )?([A-Za-z0-9.-]+)=(.*)/\x1b[36m\2\x1b[0m\t\3/g' |
-        awk 'BEGIN { FS = "\t" } ; { printf "%-30s %s\n", $1, $2}' |
-        sed -r "s/'(.*)'/\1/" |
-        sed -r 's/"(.*)"/\1/'
-    echo ""
-    echo "\x1b[32m\x1b[1m\nFunctions\x1b[0m"
+eval "$(dircolors ~/.dircolors)"
+# ignore complition
+zstyle ':completion:*:complete:-command-:*:*' ignored-patterns '*.pdf|*.exe|*.dll'
+zstyle ':completion:*:*sh:*:' tag-order files
 
-    cat ~/dotfiles/public/zsh/functions.zsh |
-        grep "^function" -B1 |
-        grep -v "^--" |
-        awk '{printf "%s%s",$0,NR%2?"\t":"\n" ; }' |
-        awk -F'\t' '{ t = $1; $1 = $2; $2 = t; print; }' |
-        sed -r 's/^function ([A-Za-z0-9_-]+)(.*) # (.*)/\x1b[36m\1\x1b[0m\t\x1b[33m\3\x1b[0m/g' |
-        awk 'BEGIN { FS = "\t" } ; { printf "%-35s %s\n", $1, $2}'
-    echo ""
-}
+zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
+zstyle ':completion:*:*:kill:*' list-colors '=(#b) #([0-9]#)*( *[a-z])*=34=31=33'
 
-# Opens the current directory in Sublime Text, otherwise opens the given location
-function open-with-sublime-text() {
-    if [ $# -eq 0 ]; then
-        subl -a .;
-    else
-        subl -a "$@";
-    fi;
-}
+# }}}
 
-# Opens the current directory in Atom, otherwise opens the given location
-function open-with-atom() {
-    if [ $# -eq 0 ]; then
-        atom .;
-    else
-        atom "$@";
-    fi;
-}
+# 语法高亮: {{{
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
 
-# Opens the current directory in Vim, otherwise opens the given location
-function open-with-vim() {
-    if [ $# -eq 0 ]; then
-        vim .;
-    else
-        vim "$@";
-    fi;
-}
+typeset -A ZSH_HIGHLIGHT_STYLES
 
-# Passthru grep
-function grep-passthru() {
-    if [ -z "$2" ]; then
-        egrep "$1|$"
-    else
-        egrep "$1|$" $2
-    fi
-}
+# ZSH_HIGHLIGHT_STYLES[command]=fg=white,bold
+# ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
+ZSH_HIGHLIGHT_STYLES[default]=none
+ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=009
+ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=009,standout
+ZSH_HIGHLIGHT_STYLES[alias]=fg=cyan,bold
+ZSH_HIGHLIGHT_STYLES[builtin]=fg=cyan,bold
+ZSH_HIGHLIGHT_STYLES[function]=fg=cyan,bold
+ZSH_HIGHLIGHT_STYLES[command]=fg=white,bold
+ZSH_HIGHLIGHT_STYLES[precommand]=fg=white,underline
+ZSH_HIGHLIGHT_STYLES[commandseparator]=none
+ZSH_HIGHLIGHT_STYLES[hashed-command]=fg=009
+ZSH_HIGHLIGHT_STYLES[path]=fg=214,underline
+ZSH_HIGHLIGHT_STYLES[globbing]=fg=063
+ZSH_HIGHLIGHT_STYLES[history-expansion]=fg=white,underline
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=none
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=none
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument]=none
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]=fg=063
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]=fg=063
+ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=009
+ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=009
+# }}}
 
-# Highlight a match in given color
-function highlight() {
-    declare -A fg_color_map
-    fg_color_map[black]=30
-    fg_color_map[red]=31
-    fg_color_map[green]=32
-    fg_color_map[yellow]=33
-    fg_color_map[blue]=34
-    fg_color_map[magenta]=35
-    fg_color_map[cyan]=36
+# zsh选项 {{{
 
-    fg_c=$(echo -e "\e[1;${fg_color_map[$1]}m")
-    c_rs=$'\e[0m'
-    sed -u s"/$2/$fg_c\0$c_rs/g"
-}
+#以下字符视为单词的一部分
+WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
+unsetopt correct_all
 
-# Commands usage statistics
-function history-stats() {
-    fc -l 1 | awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' | grep -v "./" | column -c3 -s " " -t | sort -nr | nl |  head -n25
-}
+HISTFILE=$HOME/.zsh_history
+#setopt extended_history          # 在历史文件中记录命令的时间戳
+#setopt hist_expire_dups_first    # 当历史文件就大小超过大小时，首先删除重复项
+#setopt hist_ignore_dups          # 如果连续输入的命令相同，历史纪录中只保留一个
+#setopt hist_ignore_space         # 忽略以空格开头的命令
+#setopt hist_verify               # 历史扩展后不立即执行
+#setopt inc_append_history        # 立即写入历史文件,而不是退出时才写入
+#setopt share_history             # 共享zsh历史
+setopt hist_expand               # 扩展历史
 
-# Human readable path variable
-function path() {
-    LF=$(printf '\\\012_')
-    LF=${LF%_}
+setopt HIST_IGNORE_ALL_DUPS      # 删除重复命令
+setopt HIST_FIND_NO_DUPS         # 不显示先前找到的行
+setopt HIST_SAVE_NO_DUPS         # 不要在历史文件中写入重复的条目
+setopt hist_reduce_blanks        # 录制录入之前删除多余的空白
+# }}}
 
-    echo $PATH | sed 's/:/'"$LF"'/g'
-}
+# 按键绑定{{{
+# default keymap
+bindkey -s '\ee' 'vim\n'
+bindkey '\eh' backward-char
+bindkey '\el' forward-char
+bindkey '\ej' down-line-or-history
+bindkey '\ek' up-line-or-history
+# bindkey '\eu' undo
+bindkey '\eH' backward-word
+bindkey '\eL' forward-word
+bindkey '\eJ' beginning-of-line
+bindkey '\eK' end-of-line
 
-# Recursively fix dir/file permissions on a given directory
-function fix-dir-perm() {
-    if [ -d $1 ]; then
-        find $1 -type d -exec chmod 755 {} \;
-        find $1 -type f -exec chmod 644 {} \;
-    else
-        echo "$1 is not a directory."
-    fi
-}
+bindkey -s '\eo' 'cd ..\n'
+bindkey -s ';;' 'ls\n'
 
-# Get an HTTP response header only
-function curl-header() {
-    curl -s -D - "${1}" -o /dev/null
-}
+bindkey '\e[1;3D' backward-word
+bindkey '\e[1;3C' forward-word
+bindkey '\e[1;3A' beginning-of-line
+bindkey '\e[1;3B' end-of-line
 
-# Send a purge query (Varnish)
-function curl-purge() {
-    curl -s -X PURGE "${1}" | grep "title" | sed "s_<\([^<>][^<>]*\)>\([^<>]*\)</\1>_$prefix\2_g" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
-}
+bindkey '\ev' deer
+# }}}
 
-# Create a directory and "cd" into it
-function mkdir-cd() {
-    mkdir "${1}" && cd "${1}"
-}
+# 别名 {{{
+alias pdf2htmlEX='sudo docker run -ti --rm -v `pwd`:/pdf bwits/pdf2htmlex pdf2htmlEX'
+alias rm="trash"
+alias f='find -name'
+alias vi='vim'
+alias minicom='minicom -w'
+gdbtool () { emacs --eval "(gdb \"csky-abiv2-elf-gdb --annotate=3 -i=mi $*\")";}
+# }}}
 
-# Find and replace in current dir
-function find-and-replace() {
-    if [ ${#} -ne 2 ]; then
-        echo 'Find and replace in current dir'
-        echo 'Usage: find-and-replace "pattern1" "pattern2"'
-    else
-        \ack -l "$1" | xargs sed -i "s/$1/$2/g"
-    fi
-}
+# 环境变量 {{{
 
-# Find files using ZSH globbing
-function glob-find-files-by-name() {
-    ll **/*(#i)($1)*(.)
-}
+export EDITOR=vim
+export LESSCHARSET=utf-8
 
-# Backup a file
-function backup-file() {
-    cp -r "$1"{,.bak};
-    #cp $1 $1_`date +%H:%M:%S_%d-%m-%Y`
-}
+export PATH=$PATH:~/work/intelFPGA/17.1/quartus/bin
+export PATH=$PATH:/opt/gxtools/csky-abiv2-elf/bin:/opt/gxtools/jlink:/opt/gxtools/gdb-7.11/bin/:/opt/gxtools/DebugServerConsole/
 
-# Encrypt a file
-function encrypt() {
-    openssl des3 -in $* -out $*.secret
-}
+export FORCE_UNSAFE_CONFIGURE=1
+export PATH=$PATH:/home/liyj/work/robotos/toolchains/csky/bin:/home/liyj/work/robotos/toolchains/arm/bin
+export STAGING_DIR=/home/liyj/work/robotos/toolchains/arm
 
-# Decrypt a file
-function decrypt() {
-    openssl des3 -d -in $* -out $*.plain
-}
+export PATH=$PATH:/home/liyj/xtensa/XtDevTools/install/tools/RG-2017.8-linux/XtensaTools/bin
+export XTENSA_CORE=GXHifi4_170719A_G1708
+export XTENSA_SYSTEM=/home/liyj/xtensa/XtDevTools/install/builds/RG-2017.8-linux/${XTENSA_CORE}/config
+# }}}
 
-# Small calc function
-function calc() {
-    echo "scale=2;$@" | bc;
-}
-
-# Make a port (default 80) "real life" speeds
-function slowport {
-    if [ -z "$1" ]; then
-        port=80
-    else
-        port=$1
-    fi
-
-    sudo ipfw pipe 1 config bw 100KByte/s
-    sudo ipfw add 1 pipe 1 src-port $port
-    sudo ipfw add 1 pipe 1 dst-port $port
-    echo "Port $port succesfully slowed."
-}
-
-# Restore ports speed
-function unslowport {
-    sudo ipfw delete 1
-    echo "Port succesfully un-slowed."
-}
-
-# Rename TV shows files
-function rename-tv-shows() {
-    if [ "$#" -lt 1 ]; then
-        echo "Missing TV show name"
-        echo "  Usage : rename-tv-shows Name of the TV show"
-    else
-        SHOWNAME=$@
-        SHOWNAME=${SHOWNAME/\%/\%\%} # Escape "%" for sprintf
-        RENAME="s/.*[s,S](\d{1,2}).*[e,E](\d{1,2}).*\.(.*)/sprintf '$SHOWNAME S%02dE%02d.%s', \$1, \$2, \$3/e"
-        COUNT=`rename -v -n "$RENAME" * | wc -l`
-        if [ "$COUNT" -lt 1 ]; then
-            echo "No file found"
-        else
-            rename -v -n "$RENAME" * | grep --color=auto " renamed as "
-            printf "\033[0;33mRename files ? [y/n] \033[0m"
-            if [ -n "$ZSH_VERSION" ]; then
-                read action
-            else
-                read -n 1 action
-            fi
-            if [ "$action" = "y" ] || [ "$action" = "Y" ]; then
-                rename "$RENAME" *
-            fi
-        fi
-        echo ""
-    fi
-}
-
-# Smart JPG / PNG images resize
-function smartresize() {
-    if [ "$1" == "" ]
-        then echo "Syntax : smartresize inputfile width outputdir"
-    elif [ "$2" == "" ]
-        then echo "Syntax : smartresize inputfile width outputdir"
-    elif [ "$3" == "" ]
-        then echo "Syntax : smartresize inputfile width outputdir"
-    else
-        mogrify -path "$3" -filter Triangle -define filter:support=2 -thumbnail "$2" -unsharp 0.25x0.08+8.3+0.045 -dither None -posterize 136 -quality 82 -define jpeg:fancy-upsampling=off -define png:compression-filter=5 -define png:compression-level=9 -define png:compression-strategy=1 -define png:exclude-chunk=all -interlace none -colorspace sRGB "$1"
-    fi
-}
-
-# Generate a password using pwgen
-function strong-password() {
-    echo "Syntax : strong-password [-B] [-y] [-s] [length]"
-    echo "        -B : Don't use characters that could be confused"
-    echo "        -y : Include at least one special character in the password"
-    echo "        -s : Generate  completely  random, hard-to-memorize passwords"
-    echo "    length : Password length"
-    echo ""
-    pwgen "$@"
-}
-
-# Download all files of a certain type with wget #
-# usage: wgetall mp3 http://example.com/download/
-function wgetall() {
-    wget -r -l2 -nd -Nc -A.$@ $@ ;
-}
-
-# Load colors vars http://zsh.sourceforge.net/Doc/Release/User-Contributions.html#index-colors
-autoload -U colors && colors
-
-# Setup the prompt with pretty colors, allow parameter expansion, command substitution and arithmetic expansion in prompts
-setopt prompt_subst
-
-# Speeded up native git_prompt_info()
-function git_prompt_info() {
-  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
-  echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}$ZSH_THEME_GIT_PROMPT_SUFFIX"
-}
-
-PROMPT='[%{$fg_bold[white]%}%n%{$reset_color%}@%{$fg_bold[red]%}%m%{$reset_color%} %{$fg[cyan]%}%c%{$reset_color%} $(git_prompt_info)%{$reset_color%}]$ '
-
-ZSH_THEME_GIT_PROMPT_PREFIX="(%{$fg_bold[green]%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX=")"
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[green]%} %{$fg[yellow]%}✗%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_CLEAN="%{$reset_color%}"
-
+#zprof
