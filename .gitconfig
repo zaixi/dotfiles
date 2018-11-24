@@ -1,0 +1,29 @@
+[color]
+    ui = auto
+    diff=true
+
+[alias]
+    ci = commit
+    st = status
+    co = checkout
+    b  = branch
+    br = branch
+    patch = format-patch
+
+[diff]
+    renames = copy
+	tool = bc3
+
+[rerere]
+    enabled = true
+[user]
+	email = liyj@nationalchip.com
+	name = liyj
+[core]
+	fileMode = false
+	excludesfile = /home/liyj/.gitignore
+	editor = vim
+[difftool "bc3"]
+	path = /usr/bin/bcompare
+[push]
+	default = simple
