@@ -99,12 +99,10 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator)
 POWERLEVEL9K_STATUS_OK=false
 #antibody bundle "bhilburn/powerlevel9k"
 #antibody bundle "robobenklein/p10k"
-
 #
 # normal
 #
 antibody bundle zaixi/pure
-##antibody bundle sindresorhus/pure
 
 #}}}
 
@@ -268,6 +266,7 @@ alias rm="trash"
 alias f='find -name'
 alias vi='vim'
 alias minicom='minicom -w'
+alias ncdu='baobab'
 gdbtool () { emacs --eval "(gdb \"csky-abiv2-elf-gdb --annotate=3 -i=mi $*\")";}
 # }}}
 
@@ -275,15 +274,18 @@ gdbtool () { emacs --eval "(gdb \"csky-abiv2-elf-gdb --annotate=3 -i=mi $*\")";}
 
 export EDITOR=vim
 export LESSCHARSET=utf-8
-
-export PATH=$PATH:~/work/intelFPGA/17.1/quartus/bin
-export PATH=$PATH:/opt/gxtools/csky-abiv2-elf/bin:/opt/gxtools/jlink:/opt/gxtools/gdb-7.11/bin/:/opt/gxtools/DebugServerConsole/
-
 export FORCE_UNSAFE_CONFIGURE=1
+
+#export PATH=$PATH:/opt/gxtools/csky/3.8.12/bin
+export PATH=$PATH:/opt/gxtools/csky/2.8.07/bin
+export PATH=$PATH:~/work/intelFPGA/17.1/quartus/bin
+export PATH=$PATH:/opt/gxtools/jlink:/opt/gxtools/gdb-7.11/bin/:/opt/gxtools/DebugServerConsole/
+
 export PATH=$PATH:/home/liyj/work/robotos/toolchains/csky/bin:/home/liyj/work/robotos/toolchains/arm/bin
+export PATH=$PATH:/home/liyj/xtensa/XtDevTools/install/tools/RG-2017.8-linux/XtensaTools/bin
+
 export STAGING_DIR=/home/liyj/work/robotos/toolchains/arm
 
-export PATH=$PATH:/home/liyj/xtensa/XtDevTools/install/tools/RG-2017.8-linux/XtensaTools/bin
 export XTENSA_CORE=GXHifi4_170719A_G1708
 export XTENSA_SYSTEM=/home/liyj/xtensa/XtDevTools/install/builds/RG-2017.8-linux/${XTENSA_CORE}/config
 # }}}

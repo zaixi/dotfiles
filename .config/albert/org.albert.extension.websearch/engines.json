@@ -1,5 +1,11 @@
 [
     {
+        "iconPath": "/home/liyj/.config/albert/org.albert.extension.websearch/{d468baca-a3bb-48f8-b072-f5612693e7f9}.",
+        "name": "Baidu",
+        "trigger": "bd",
+        "url": "https://www.baidu.com"
+    },
+    {
         "iconPath": ":google",
         "name": "Google",
         "trigger": "gg ",

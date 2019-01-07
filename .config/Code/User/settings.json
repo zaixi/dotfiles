@@ -7,4 +7,7 @@
   "evermonkey.noteStoreUrl": "https://app.yinxiang.com/shard/s12/notestore",
 // Copy your Developer Token from the website. (ever token: Open Developer Page)
   "evermonkey.token": "S=s12:U=11bd738:E=16cf714212c:C=1659f62f3f8:P=1cd:A=en-devtoken:V=2:H=491174096a77dd3b9e5495f230cf9f4c",
+  "editor.matchBrackets": false,
+  "editor.renderIndentGuides": false,
+  "workbench.colorTheme": "Visual Studio Light",
 }
