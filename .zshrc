@@ -21,7 +21,7 @@ fi
 
 function _upgrade_plugin() {
   antibody update
-  cd "$HOME/.fzf" && git pull && ./install --bin
+  cd "$HOME/.fzf" && git pull && ./install --bin && cd -
   pip3 install thefuck --upgrade
   sudo pip3 install thefuck --upgrade
 }
@@ -66,11 +66,12 @@ _INIT_SH_NOFUN=1
 # 插件 {{{
 source <(antibody init)
 ZSH="$(antibody home)/https-COLON--SLASH--SLASH-github.com-SLASH-robbyrussell-SLASH-oh-my-zsh"
+antibody bundle changyuheng/fz
+function _z() { _zlua "$@"; }
 antibody bundle robbyrussell/oh-my-zsh
 antibody bundle "
 robbyrussell/oh-my-zsh path:plugins/common-aliases
 robbyrussell/oh-my-zsh path:plugins/colorize
-robbyrussell/oh-my-zsh path:plugins/autojump
 robbyrussell/oh-my-zsh path:plugins/fzf
 robbyrussell/oh-my-zsh path:plugins/colored-man-pages
 robbyrussell/oh-my-zsh path:plugins/last-working-dir
@@ -86,6 +87,7 @@ antibody bundle zsh-users/zsh-completions
 antibody bundle unixorn/autoupdate-antigen.zshplugin
 antibody bundle zsh-users/zsh-syntax-highlighting
 antibody bundle mafredri/zsh-async
+antibody bundle skywind3000/z.lua
 
 # 主题
 #
@@ -150,13 +152,12 @@ vg() {
 }
 
 j() {
-    if [[ "$#" -ne 0 ]]; then
-        cd $(autojump $@)
-        return
-    fi
-    cd "$(autojump -s | sed '/_____/Q; s/^[0-9,.:]*\s*//' |  fzf --height 40% --reverse --inline-info)"
+	if [[ "$#" -ne 0 ]]; then
+		z $@
+		return
+	fi
+	cd "$(z -l | sed '/_____/Q; s/^[0-9,.:]*\s*//' |  fzf --height 40% --reverse --inline-info)"
 }
-
 # fe [FUZZY PATTERN] - Open the selected file with the default editor
 #   - Bypass fuzzy finder if there's only one match (--select-1)
 #   - Exit if there's no match (--exit-0)
@@ -276,8 +277,8 @@ export EDITOR=vim
 export LESSCHARSET=utf-8
 export FORCE_UNSAFE_CONFIGURE=1
 
-#export PATH=$PATH:/opt/gxtools/csky/3.8.12/bin
-export PATH=$PATH:/opt/gxtools/csky/2.8.07/bin
+export PATH=$PATH:/opt/gxtools/csky/3.8.12/bin
+#export PATH=$PATH:/opt/gxtools/csky/2.8.07/bin
 export PATH=$PATH:~/work/intelFPGA/17.1/quartus/bin
 export PATH=$PATH:/opt/gxtools/jlink:/opt/gxtools/gdb-7.11/bin/:/opt/gxtools/DebugServerConsole/
 
@@ -289,5 +290,11 @@ export STAGING_DIR=/home/liyj/work/robotos/toolchains/arm
 export XTENSA_CORE=GXHifi4_170719A_G1708
 export XTENSA_SYSTEM=/home/liyj/xtensa/XtDevTools/install/builds/RG-2017.8-linux/${XTENSA_CORE}/config
 # }}}
+
+alias svi='vim -u ~/.SpaceVim/vimrc'
+alias snvi='nvim -u ~/.SpaceVim/vimrc'
+alias lvi='vim -u ~/.vim_init/vim-init/init.vim'
+alias lnvi='nvim -u ~/.vim_init/vim-init/init.vim'
+alias pnvi='nvim -u ~/.vim_init/vim-init/init.vim'
 
 #zprof

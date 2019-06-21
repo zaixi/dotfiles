@@ -10,4 +10,9 @@
   "editor.matchBrackets": false,
   "editor.renderIndentGuides": false,
   "workbench.colorTheme": "Visual Studio Light",
+  "cSpell.language": "en",
+  "cquery.codeLens.onLocalVariables": true,
+  "cquery.launch.command": "/home/liyj/ccls/cquery/build/release/bin/cquery",
+  "cquery.cacheDirectory": "/tmp/cquery",
+  "clangd.path": "/usr/bin/clangd-8"
 }

@@ -120,3 +120,6 @@ fi
 [ -f /home/liyj/.travis/travis.sh ] && source /home/liyj/.travis/travis.sh
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export XTENSA_CORE=GXHifi4_170719A_G1708
+export XTENSA_SYSTEM=/home/liyj/xtensa/XtDevTools/install/builds/RG-2017.8-linux/${XTENSA_CORE}/config
+export PATH=$PATH:/home/liyj/xtensa/XtDevTools/install/tools/RG-2017.8-linux/XtensaTools/bin

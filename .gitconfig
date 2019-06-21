@@ -27,3 +27,5 @@
 	path = /usr/bin/bcompare
 [push]
 	default = simple
+[log]
+	date = iso
