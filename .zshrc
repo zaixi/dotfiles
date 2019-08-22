@@ -7,7 +7,7 @@ if [ ! -x "$(which antibody)" ]; then
     echo "Installing antibody..."
     URL="git.io/antibody"
     if [ -x "$(which curl)" ]; then
-		curl -sL "$URL" | sudo sh -s
+		curl -sfL "$URL" | sudo sh -s -- -b /usr/local/bin
     else
         echo "ERROR: please install curl before installation !!"
         exit
@@ -277,18 +277,7 @@ export EDITOR=vim
 export LESSCHARSET=utf-8
 export FORCE_UNSAFE_CONFIGURE=1
 
-export PATH=$PATH:/opt/gxtools/csky/3.8.12/bin
-#export PATH=$PATH:/opt/gxtools/csky/2.8.07/bin
-export PATH=$PATH:~/work/intelFPGA/17.1/quartus/bin
-export PATH=$PATH:/opt/gxtools/jlink:/opt/gxtools/gdb-7.11/bin/:/opt/gxtools/DebugServerConsole/
-
-export PATH=$PATH:/home/liyj/work/robotos/toolchains/csky/bin:/home/liyj/work/robotos/toolchains/arm/bin
-export PATH=$PATH:/home/liyj/xtensa/XtDevTools/install/tools/RG-2017.8-linux/XtensaTools/bin
-
-export STAGING_DIR=/home/liyj/work/robotos/toolchains/arm
-
-export XTENSA_CORE=GXHifi4_170719A_G1708
-export XTENSA_SYSTEM=/home/liyj/xtensa/XtDevTools/install/builds/RG-2017.8-linux/${XTENSA_CORE}/config
+export PATH=$PATH:~/work/testbench/hbtdisk/toolchain/aarch64-gcc-linaro-7.2.1-2017.11/bin
 # }}}
 
 alias svi='vim -u ~/.SpaceVim/vimrc'
@@ -296,5 +285,11 @@ alias snvi='nvim -u ~/.SpaceVim/vimrc'
 alias lvi='vim -u ~/.vim_init/vim-init/init.vim'
 alias lnvi='nvim -u ~/.vim_init/vim-init/init.vim'
 alias pnvi='nvim -u ~/.vim_init/vim-init/init.vim'
+
+unset NO_PROXY ALL_PROXY all_proxy no_proxy
+
+if [ ! -d "/home/$USER/spec/csi" ];then
+  sudo mount -t cifs //10.106.37.17/spec -o username="yujiang.li",password="Aa123456",uid=$UID,gid=$GID ~/spec
+fi
 
 #zprof
