@@ -23,9 +23,12 @@
 	fileMode = false
 	excludesfile = /home/liyj/.gitignore
 	editor = vim
+	#pager = less -FRSX
 [difftool "bc3"]
 	path = /usr/bin/bcompare
 [push]
 	default = simple
 [log]
 	date = iso
+[pager]
+	branch = false

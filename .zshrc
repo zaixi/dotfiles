@@ -287,9 +287,11 @@ alias lnvi='nvim -u ~/.vim_init/vim-init/init.vim'
 alias pnvi='nvim -u ~/.vim_init/vim-init/init.vim'
 
 unset NO_PROXY ALL_PROXY all_proxy no_proxy
+export REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/'
 
 if [ ! -d "/home/$USER/spec/csi" ];then
   sudo mount -t cifs //10.106.37.17/spec -o username="yujiang.li",password="Aa123456",uid=$UID,gid=$GID ~/spec
+  sudo mount -t cifs //10.106.37.17/users/yujiang.li/Downloads -o username="yujiang.li",password="Aa123456",uid=$UID,gid=$GID ~/下载
 fi
 
 #zprof
