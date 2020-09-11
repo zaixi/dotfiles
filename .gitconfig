@@ -9,26 +9,37 @@
     b  = branch
     br = branch
     patch = format-patch
-
-[diff]
-    renames = copy
-	tool = bc3
+    pbr = "!f() { git fetch origin $1; if [ $? -eq 0 ];then git cherry-pick FETCH_HEAD;fi; }; f"
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
 
 [rerere]
     enabled = true
 [user]
-	email = liyuijangwork@foxmail.com
-	name = liyj
+    email = yujiang.li@horizon.ai
+    name = yujiang.li
 [core]
-	fileMode = false
-	excludesfile = /home/liyj/.gitignore
-	editor = vim
-	#pager = less -FRSX
+    fileMode = false
+    excludesfile = ~/.gitignore
+    editor = vim
+    pager = less -+F -+X
+
+[diff]
+    tool = bc3
 [difftool "bc3"]
-	path = /usr/bin/bcompare
+    cmd = /usr/bin/bcompare \"$LOCAL\" \"$REMOTE\"
+[difftool]
+    prompt = false
+
+[merge]
+    tool = bc3
+[mergetool "bc3"]
+    cmd = /usr/bin/bcompare \"$LOCAL\" \"$REMOTE\"
+[mergetool]
+    prompt = false
+
 [push]
-	default = simple
+    default = simple
 [log]
-	date = iso
+    date = iso
 [pager]
-	branch = false
+    branch = false
