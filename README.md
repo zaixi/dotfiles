@@ -10,14 +10,22 @@ pip install --upgrade mackup
 ```
 
 ### 备份
+#### 备份文件(需要确认)
 ```bash
-# 备份文件
 mackup backup
+```
+#### 备份文件(不需要确认)
+```
+mackup backup -f
 ```
 ### 恢复
 ```bash
 # 恢复文件
 mackup restore
+```
+### 将任何同步的配置文件复制回其原始位置
+```
+mackup uninstall
 ```
 
 ## 配置
