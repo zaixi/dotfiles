@@ -15,8 +15,8 @@
 [rerere]
     enabled = true
 [user]
-    email = yujiang.li@horizon.ai
-    name = yujiang.li
+    email = 578269057@qq.com
+    name = zaixi
 [core]
     fileMode = false
     excludesfile = ~/.gitignore
