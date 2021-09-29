@@ -68,6 +68,8 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=8
 _ZL_CMD='j'
 FZ_CMD='j'
 FZ_HISTORY_CD_CMD=_zlua
+_ZL_HYPHEN=1
+_ZL_MATCH_MODE=1
 
 PURE_GIT_TIMEOUT_MS=100
 PROMPT=$'%F{071}%n%f@%F{071}%m%f:%F{blue}%~%f %(?.%F{green}.%F{red})❯%f'
@@ -275,6 +277,10 @@ bindkey '\ev' deer
 # }}}
 
 # 别名 {{{
+alias jz='j -c' # 严格匹配当前路径的子路径
+alias ji='j -i' # 使用交互式选择模式
+alias jf='j -I' # 使用 fzf 对多个结果进行选择
+alias jb='j -b' # 快速回到父目录
 alias pdf2htmlEX='sudo docker run -ti --rm -v `pwd`:/pdf bwits/pdf2htmlex pdf2htmlEX'
 alias rm="trash"
 alias f='find -name'
