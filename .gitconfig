@@ -47,3 +47,9 @@
     date = iso
 [pager]
     branch = false
+[url "https://github.com.cnpmjs.org/"]
+	insteadOf = https://github.com/
+[https]
+	sslverify = false
+[http]
+	sslverify = false

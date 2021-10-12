@@ -14,7 +14,7 @@ fi
 
 function _upgrade_plugin() {
   zinit self-update
-  zinit update
+  zinit update --parallel
   pip3 install thefuck --upgrade
   sudo pip3 install thefuck --upgrade
 }
