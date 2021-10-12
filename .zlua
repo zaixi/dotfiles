@@ -1,12 +1,12 @@
 /home/liyj/work|196|1595486846
-/home/liyj/software/jianguoyun/note|244|1599741532
+/home/liyj/software/jianguoyun/note|248|1600071094
 /|13|1595474743
 /dev|2|1595474759
 /etc|7|1595474646
 /home/liyj|1|0
 /home/liyj/.cache/antibody/https-COLON--SLASH--SLASH-github.com-SLASH-mafredri-SLASH-zsh-async|1|0
 /home/liyj/.cache/antibody/https-COLON--SLASH--SLASH-github.com-SLASH-zaixi-SLASH-pure|4|1594109654
-/home/liyj/github|228|1599789639
+/home/liyj/github|229|1599816278
 /home/liyj/.vim|10|1594103097
 /lib/x86_64-linux-gnu|4|1550738449
 /root|1|0
@@ -14,7 +14,7 @@
 /usr/share/glib-2.0/schemas|4|1550818490
 /home/liyj/software/dotfiles|98|1599793137
 /home/liyj/software|25|1599793131
-/home/liyj/下载|147|1599789449
+/home/liyj/下载|149|1600051314
 /home/liyj/桌面|8|1567994820
 /media|2|1566738118
 /media/liyj|2|1567078700
@@ -33,7 +33,7 @@
 /home/liyj/.cache/antibody|8|1594121527
 /home/liyj/图片|1|1561006523
 /home/liyj/.cache/vimfiles/gutentags_plus|5|1565860951
-/home/liyj/.vim-init|48|1599810030
+/home/liyj/.vim-init|51|1600065569
 /bin|2|1595474701
 /home/liyj/software/jianguoyun|74|1599562285
 /home/liyj/work/kernel-proto|164|1599210741
@@ -51,7 +51,7 @@
 /home/liyj/github/ansible-ubuntu/roles/32bitlib/tasks|2|1565851885
 /home/liyj/.cache/vimfiles/YouCompleteMe|12|1595423441
 /home/liyj/.cache/vimfiles/ale|1|1565860947
-/home/liyj/.ssh|5|1578725143
+/home/liyj/.ssh|7|1600071943
 /home/liyj/work/testbench|4|1565939524
 /home/liyj/test|51|1595676056
 /run/user/1000/gvfs|1|1565926460
@@ -119,7 +119,7 @@
 /home/liyj/github/wowolib/debug|1|1567666118
 /home/liyj/github/wowolib/devmem|5|1568164519
 /home/liyj/github/uboot|21|1577258071
-/home/liyj/github/kernel|30|1599469363
+/home/liyj/github/kernel|31|1599816284
 /home/liyj/work/kernel-proto/tools/spi|2|1567733578
 /home/liyj/github/j3-linux/tools/spi|2|1568101563
 /opt/nfs|5|1569232043
@@ -128,7 +128,7 @@
 /home/liyj/hzlabpc01|71|1599204861
 /home/liyj/github/j3-linux/tools|1|1568101559
 /usr/arm-linux-gnueabihf|1|1568600084
-/home/liyj/github/liyj-scoop-bucket|6|1595486234
+/home/liyj/github/liyj-scoop-bucket|7|1599816277
 /home/liyj/github/liyj-scoop-bucket/bucket|1|1568703482
 /home/liyj/work/robotos|107|1599274425
 /home/liyj/work/robotos/kernel|56|1597138570
@@ -178,7 +178,7 @@
 /home/liyj/Documents/tools/BX002-PT-00007-r11p15-00rel0|8|1579401674
 /home/liyj/Documents/tools/DS500-BN-00018-r5p0-29rel2|4|1587612578
 /home/liyj/code_back/bare-metal_ddr|19|1594276573
-/home/liyj/code_back/bare-metal|329|1599740150
+/home/liyj/code_back/bare-metal|330|1599813707
 /home/liyj/code_back/kernel-proto|42|1596458993
 /home/liyj/code_back/bare-metal/include|11|1587638315
 /home/liyj/code_back/bare-metal-mstar|87|1599543687
@@ -247,7 +247,7 @@
 /etc/rcS.d|2|1593433216
 /home/liyj/.cache/vimfiles/vim-colorschemes|2|1593774800
 /home/liyj/.cache/vimfiles/vim-colorschemes/colors|2|1593774806
-/home/liyj/.vim-init/init|8|1599704537
+/home/liyj/.vim-init/init|9|1600065094
 /home/liyj/.fzf|7|1594195161
 /home/liyj/.zinit/bin|1|1594004984
 /home/liyj/.zinit|22|1595494655
@@ -281,13 +281,13 @@
 /home/liyj/.cache/vimfiles/YouCompleteMe/third_party/ycmd/ycmd/completers/all/__pycache__|2|1595424212
 /tmp|1|1595474047
 /home/liyj/.zinit/polaris|1|1595492352
-/home/liyj/.tmux|5|1596113638
+/home/liyj/.tmux|7|1600061216
 /home/liyj/.tmux/plugins/tmux-powerline|9|1596424867
-/home/liyj/.tmux/plugins|6|1596424869
+/home/liyj/.tmux/plugins|11|1600061342
 /home/liyj/github/tmux|2|1595679765
 /home/liyj/.tmux/plugins/tmux-continuum|1|1595679257
 /home/liyj/.tmux/plugins/tmux-powerline-theme|1|1595816486
-/home/liyj/.tmux/plugins/tmux-pain-control|1|1596436486
+/home/liyj/.tmux/plugins/tmux-pain-control|4|1600061586
 /home/liyj/work/chip_production_tool/abv_blackbox|3|1596876747
 /home/liyj/work/chip_production_tool|1|1596876745
 /mnt/hgfs|1|1598854379
@@ -301,3 +301,5 @@
 /home/liyj/spec/eth|1|1599615374
 /home/liyj/spec/eth_phy|1|1599618623
 /home/liyj/.tmux/resurrect|2|1599719810
+/home/liyj/.dotfiles|4|1600072714
+/home/liyj/.tmux/plugins/vim-tmux-navigator|3|1600061221

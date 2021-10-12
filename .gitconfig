@@ -15,13 +15,17 @@
 [rerere]
     enabled = true
 [user]
-    email = 578269057@qq.com
-    name = zaixi
+    #email = 578269057@qq.com
+    #name = zaixi
+    email = yujiang.li@horizon.ai
+    name = yujiang.li
 [core]
     fileMode = false
     excludesfile = ~/.gitignore
     editor = vim
     pager = less -+F -+X
+    safecrlf = true
+    autocrlf = false
 
 [diff]
     tool = bc3

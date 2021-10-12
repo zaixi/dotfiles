@@ -123,3 +123,7 @@ fi
 export XTENSA_CORE=GXHifi4_170719A_G1708
 export XTENSA_SYSTEM=/home/liyj/xtensa/XtDevTools/install/builds/RG-2017.8-linux/${XTENSA_CORE}/config
 export PATH=$PATH:/home/liyj/xtensa/XtDevTools/install/tools/RG-2017.8-linux/XtensaTools/bin
+export PATH=$PATH:/opt/arm/developmentstudio_platinum-2020.b/bin
+export PATH=$PATH:/opt/arm/developmentstudio_platinum-2020.b/sw/ARMCompiler6.15/bin
+export ARMLMD_LICENSE_FILE="8224@127.0.0.1
+export ARM_PRODUCT_DEF=/opt/hobot/fpga/cv_script/ds5/bin/gold.elmap
