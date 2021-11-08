@@ -3,6 +3,8 @@ if [[ ! -f $HOME/.dotfiles/.zshrc ]]; then
    command git clone https://github.com/zaixi/dotfiles "$HOME/.dotfiles" && \
      print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
      print -P "%F{160}▓▒░ The clone has failed.%f%b"
+   chsh -s /bin/zsh
+   zsh
 else
    source $HOME/.dotfiles/.zshrc.common
 fi
