@@ -126,6 +126,12 @@ zinit ice wait"0a" lucid atclone"dircolors -b dircolors.ansi-dark > clrs.zsh" \
     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
 zinit light seebi/dircolors-solarized
 
+# as"program" 将pick''选择的文件添加到$PATH，不要source它，
+# pick "src/vim" 设置可执行标志src/vim，提示src/应添加到$PATH.
+zinit wait"0b" lucid as=program pick="trans" \
+    atclone="ln -s translate trans" for \
+    soimort/translate-shell
+
 source $dotfiles_dir/zinit/p10.zsh
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
