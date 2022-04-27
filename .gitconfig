@@ -47,7 +47,7 @@
     date = iso
 [pager]
     branch = false
-[url "https://github.com.cnpmjs.org/"]
+[url "https://hub.fastgit.xyz/"]
 	insteadOf = https://github.com/
 [https]
 	sslverify = false
