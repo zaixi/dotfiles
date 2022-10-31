@@ -22,7 +22,7 @@
 [core]
     fileMode = false
     excludesfile = ~/.gitignore
-    editor = vim
+    editor = nvim
     pager = less -+F -+X
     safecrlf = true
     autocrlf = false
@@ -47,9 +47,11 @@
     date = iso
 [pager]
     branch = false
-[url "https://hub.fastgit.xyz/"]
-	insteadOf = https://github.com/
+#[url "https://hub.fastgit.xyz/"]
+#	insteadOf = https://github.com/
 [https]
 	sslverify = false
 [http]
 	sslverify = false
+[safe]
+	directory = /home/shenyu/code/bare-metal-v2

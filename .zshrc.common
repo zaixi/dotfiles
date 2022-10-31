@@ -291,7 +291,7 @@ alias jb='j -b' # 快速回到父目录
 alias pdf2htmlEX='sudo docker run -ti --rm -v `pwd`:/pdf bwits/pdf2htmlex pdf2htmlEX'
 alias rm="trash"
 alias f='find -name'
-alias vi='vim'
+alias vi='nvim'
 alias minicom='minicom -w'
 alias ncdu='baobab'
 gdbtool () { emacs --eval "(gdb \"csky-abiv2-elf-gdb --annotate=3 -i=mi $*\")";}
