@@ -294,6 +294,7 @@ alias f='find -name'
 alias vi='nvim'
 alias minicom='minicom -w'
 alias ncdu='baobab'
+alias make='bear make'
 gdbtool () { emacs --eval "(gdb \"csky-abiv2-elf-gdb --annotate=3 -i=mi $*\")";}
 # }}}
 
