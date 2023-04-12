@@ -1,6 +1,7 @@
 ##!/bin/zsh -f
 #zmodload zsh/zprof
-#
+
+[ -f "$HOME/.profile" ] && source "$HOME/.profile"
 
 # 安装和更新 {{{
 ### Added by Zinit's installer
