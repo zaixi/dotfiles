@@ -17,8 +17,8 @@
 [user]
     #email = 578269057@qq.com
     #name = zaixi
-    email = yujiang.li@horizon.ai
-    name = yujiang.li
+	email = liyujiang@axera-tech.com
+	name = liyujiang
 [core]
     fileMode = false
     excludesfile = ~/.gitignore

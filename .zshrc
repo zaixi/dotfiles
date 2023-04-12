@@ -17,3 +17,4 @@ export PATH=$PATH:/opt/arm/developmentstudio-2020.0/bin
 export PATH=$PATH:/opt/arm/developmentstudio-2020.0/sw/ARMCompiler6.14/bin
 export ARMLMD_LICENSE_FILE="8224@127.0.0.1"
 export ARM_PRODUCT_DEF=/opt/hobot/fpga/cv_script/ds5/bin/gold.elmap
+export PATH=/home/liyujiang/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-linux-gnueabihf/bin:$PATH
