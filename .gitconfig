@@ -47,8 +47,8 @@
     date = iso
 [pager]
     branch = false
-#[url "https://ghproxy.com/https://github.com/"]
-    #insteadOf = https://github.com/
+[url "https://ghproxy.com/https://github.com/"]
+    insteadOf = https://github.com/
 [https]
 	sslverify = false
 [http]
