@@ -5,3 +5,4 @@
 pip3 install mackup
 ln -s -f ~/.dotfiles/.mackup.cfg ~/
 ln -s -f ~/.dotfiles/.mackup ~/
+chsh -s /bin/zsh
