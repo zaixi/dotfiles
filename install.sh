@@ -2,7 +2,7 @@
 
 #sudo apt-get install python3-pip
 # base
-sudo apt-get install -y zsh curl gawk gcc git gzip less make tar tmux trash-cli unzip vim wget whois zip tree ripgrep
+sudo apt-get install -y zsh lua5.3 curl gawk gcc git gzip less make tar tmux trash-cli unzip vim wget whois zip tree ripgrep
 # extend
 sudo apt-get install -y bzip2 dos2unix htop httping iftop iotop nmap openssl rsync sshfs sshpass snap
 # docker
@@ -19,10 +19,15 @@ sudo apt-get install -y bcompare
 mkdir -p ~/.local/bin
 nvim_version=$(curl -s "https://api.github.com/repos/neovim/neovim/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
 wget https://github.com/neovim/neovim/releases/download/v${nvim_version=}/nvim.appimage -O ~/.local/bin/nvim
+chmod +x ~/.local/bin/nvim
 git clone https://github.com/zaixi/LazyVim ~/.config/nvim
+# node.js
+curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash - &&\
+sudo apt-get install -y nodejs;corepack enable;yarn -y
 
 pip3 install mackup
 
 ln -s -f ~/.dotfiles/.mackup.cfg ~/
 ln -s -f ~/.dotfiles/.mackup ~/
 chsh -s /bin/zsh
+mackup restore
