@@ -163,16 +163,32 @@ export FZF_COMPLETION_TRIGGER=''
 
 # fuzzy grep open via ag with line number
 vg() {
-  local file
-  local line
+	# 1. Search for text in files using Ripgrep
+	# 2. Interactively narrow down the list using fzf
+	# 3. Open the file in Vim
+	rg --color=always --line-number --no-heading --smart-case "${*:-}" |
+		fzf --ansi \
+		--color "hl:-1:underline,hl+:-1:underline:reverse" \
+		--delimiter : \
+		--preview 'bat --color=always {1} --highlight-line {2}' \
+		--preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+		--bind 'enter:become(nvim {1} +{2})'
+}
 
-  #read -r file line <<<"$(ag --nobreak --noheading $@ | fzf -0 -1 | awk -F: '{print $1, $2}')"
-  read -r file line <<<"$(ag --nobreak --noheading --color $@ | fzf -0 -1 --ansi | awk -F: '{print $1, $2}')"
+ag() {
 
-  if [[ -n $file ]]
-  then
-     vim $file +$line
-  fi
+	# 1. Search for text in files using Ripgrep
+	# 2. Interactively restart Ripgrep with reload action
+	# 3. Open the file in Vim
+	RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+	INITIAL_QUERY="${*:-}"
+	: | fzf --ansi --disabled --query "$INITIAL_QUERY" \
+	--bind "start:reload:$RG_PREFIX {q}" \
+	--bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
+	--delimiter : \
+	--preview 'bat --color=always {1} --highlight-line {2}' \
+	--preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+	--bind 'enter:become(vim {1} +{2})'
 }
 
 j() {
@@ -296,7 +312,7 @@ alias f='find -name'
 alias vi='nvim'
 alias minicom='minicom -w'
 alias ncdu='baobab'
-alias make='bear make'
+#alias make='bear make'
 gdbtool () { emacs --eval "(gdb \"csky-abiv2-elf-gdb --annotate=3 -i=mi $*\")";}
 # }}}
 
